@@ -42,9 +42,9 @@ void chuta() {
     scanf(" %c", &chute);
 
     if (letraExiste(chute)) {
-        printf("Correto.");
+        printf("Correto.\n\n");
     } else {
-        printf("Errou.");
+        printf("Errou.\n\n");
     }
     
     chutes[chutesDados] = chute;
@@ -63,7 +63,7 @@ int jaChutou(char letra) {
 }
 
 void desenhaForca() {
-    int erros = chutesErrados;
+    int erros = chutesErrados();
 
     printf("  _______       \n");
     printf(" |/      |      \n");
