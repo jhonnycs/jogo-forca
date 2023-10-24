@@ -17,3 +17,6 @@ int defineDificuldade();
 
 int verificarPalavrasIguais(char* palavra1, char* palavra2);
 int palavraJaExiste(FILE* f, char* novaPalavra, int qtdPalavras);
+
+int calcPontuacaoPlayer();
+void insertPlayerRanking();
