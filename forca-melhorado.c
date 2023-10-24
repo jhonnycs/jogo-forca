@@ -12,7 +12,7 @@
         Imprima a letra ‘A’ e a letra ‘Z’ como inteiros (usando %d) e descubra seus
         números. Em seguida, faça um if proibindo o caractere digitado de ser fora
         desse intervalo.
-
+        --------------------------
 
     2) Não permitir que o usuário insira uma palavra que já exista no arquivo de
         palavras.
@@ -23,7 +23,7 @@
 
     4) Pergunte ao usuário o nível de dificuldade que ele quer jogar. De acordo
         com o nível, você tem mais ou menos chutes.
-
+        --------------------------
 
     5) A função enforcou() tem código repetido. Você pode fazer uso da função jachutou() e diminuir a duplicação de código.
 
@@ -45,10 +45,14 @@
 */
 
 #define TAMANHO_PALAVRA 20
+#define DIFICULDADE_FACIL 6
+#define DIFICULDADE_MEDIO 5
+#define DIFICULDADE_DIFICIL 4
 
 char palavraSecreta[TAMANHO_PALAVRA];
 char chutes[26];
 int chutesDados = 0;
+int dificuldade;
 
 void abertura() {
     printf("/****************/\n");
@@ -78,13 +82,18 @@ void escolhePalavra() {
 
 void chuta() {
     char chute;
-    printf("Chute uma letra:\n> ");
+    printf("Chute uma letra maiúscula:\n> ");
     scanf(" %c", &chute);
 
+    while (chute < 65 || chute > 90) {
+        printf("Por favor, chute uma letra válida (maiúscula):\n> ");
+        scanf(" %c", &chute);
+    }
+
     if (letraExiste(chute)) {
-        printf("Correto.");
+        printf("Correto.\n\n");
     } else {
-        printf("Errou.");
+        printf("Errou.\n\n");
     }
     
     chutes[chutesDados] = chute;
@@ -103,7 +112,7 @@ int jaChutou(char letra) {
 }
 
 void desenhaForca() {
-    int erros = chutesErrados;
+    int erros = chutesErrados();
 
     printf("  _______       \n");
     printf(" |/      |      \n");
@@ -113,7 +122,7 @@ void desenhaForca() {
     printf(" |      %c %c   \n", (erros>=4?'/':' '), (erros>=4?'\\':' '));
     printf(" |              \n");
     printf("_|___           \n");
-    printf("\n\n");
+    printf("\n");
     
     printf("Você já deu %d chutes\n", chutesDados);
 
@@ -144,9 +153,29 @@ int chutesErrados() {
     }
     return erros;
 }
+// melhoria 4 --------------------------
+void escolhaDificuldade() {
+    int dificuldade;
+    printf("Escolha a dificuldade:\n");
+    printf("(1) Fácil   (2) Médio   (3) Difícil\n> ");
+    scanf("%d", &dificuldade);
+}
+
+int defineDificuldade() {
+    switch (dificuldade) {
+    case 1:
+        return DIFICULDADE_FACIL;
+    case 2:
+        return DIFICULDADE_MEDIO;
+    case 3:
+        return DIFICULDADE_DIFICIL;
+    default:
+        return DIFICULDADE_MEDIO;
+    }
+}
 
 int enforcou() {
-    return chutesErrados() >= 5;
+    return chutesErrados() >= defineDificuldade();
 }
 
 int ganhou() {
@@ -157,19 +186,46 @@ int ganhou() {
     }
     return 1;
 }
+// melhoria 2 --------------------------
+int verificarPalavrasIguais(char* palavra1, char* palavra2) {
+    int saoIguais = 1;
+    if (strlen(palavra1) == strlen(palavra2)) {
+        for (int i = 0; i < strlen(palavra1); i++) {
+            if (palavra1[i] != palavra2[i]) {
+                saoIguais = 0;
+                break;
+            }
+        }
+    } else {
+        saoIguais = 0;
+    }
+    return saoIguais;
+}
+
+int palavraJaExiste(FILE* f, char* novaPalavra, int qtdPalavras) {
+    char palavraDoArquivo[TAMANHO_PALAVRA];
+
+    for (int i = 0; i < qtdPalavras; i++) {
+        fscanf(f, "%s", palavraDoArquivo);
+        if (verificarPalavrasIguais(novaPalavra, palavraDoArquivo)) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 void adicionarPalavra() {
     char simOuNao;
 
-    printf("Desejas adicionar uma nova palavra (s ou n)?\n> ");
+    printf("Desejas adicionar uma nova palavra (S ou N)?\n> ");
     scanf(" %c", &simOuNao);
 
-    while (simOuNao != 's' && simOuNao != 'n') {
-        printf("Por favor, digite s ou n:\n> ");
+    while (simOuNao != 's' && simOuNao != 'n' && simOuNao != 'S' && simOuNao != 'N') {
+        printf("Por favor, digite S ou N:\n> ");
         scanf(" %c", &simOuNao);
     }
 
-    if (simOuNao == 's') {
+    if (simOuNao == 's' || simOuNao == 'S') {
         char novaPalavra[TAMANHO_PALAVRA];
 
         printf("Digite a nova palavra:\n> ");
@@ -179,21 +235,27 @@ void adicionarPalavra() {
         
         int qtd;
         fscanf(f, "%d", &qtd);
-        qtd++;
-        fseek(f, 0, SEEK_SET);
-        fprintf(f, "%d", qtd);
 
-        fseek(f, 0, SEEK_END);
-        fprintf(f, "\n%s", novaPalavra);
-        fclose(f);
+        if (palavraJaExiste(f, novaPalavra, qtd)) {
+            printf("A palavra já existe. Palavra não adicionada\n");
+            fclose(f);
+        } else {
+            qtd++;
+            fseek(f, 0, SEEK_SET);
+            fprintf(f, "%d", qtd);
+            fseek(f, 0, SEEK_END);
+            fprintf(f, "\n%s", novaPalavra);
+            printf("Palavra adicionada!\n");
+            fclose(f);
+        }
     }
-    
 }
 
 int main() {
-
+    /*
     abertura();
     escolhePalavra(palavraSecreta);
+    escolhaDificuldade();
 
     do {
         desenhaForca();
@@ -239,6 +301,7 @@ int main() {
         printf("     \\_         _/         \n");
         printf("       \\_______/           \n");
     }
+    */
 
-
+   adicionarPalavra();
 }

@@ -6,9 +6,11 @@ void escolhePalavra();
 void chuta();
 int jaChutou(char letra);
 void desenhaForca();
-void desenhaforca();
 int letraExiste(char letra);
 int chutesErrados();
 int enforcou();
 int ganhou();
 void adicionarPalavra();
+
+void escolhaDificuldade();
+int defineDificuldade();
