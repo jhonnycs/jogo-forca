@@ -252,7 +252,6 @@ void adicionarPalavra() {
 }
 
 int main() {
-    /*
     abertura();
     escolhePalavra(palavraSecreta);
     escolhaDificuldade();
@@ -301,7 +300,4 @@ int main() {
         printf("     \\_         _/         \n");
         printf("       \\_______/           \n");
     }
-    */
-
-   adicionarPalavra();
 }
