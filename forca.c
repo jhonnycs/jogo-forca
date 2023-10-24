@@ -121,11 +121,11 @@ int ganhou() {
 void adicionarPalavra() {
     char simOuNao;
 
-    printf("Desejas adicionar uma nova palavra (s ou n)?\n> ");
+    printf("Desejas adicionar uma nova palavra (S ou N)?\n> ");
     scanf(" %c", &simOuNao);
 
-    while (simOuNao != 's' && simOuNao != 'n') {
-        printf("Por favor, digite s ou n:\n> ");
+    while (simOuNao != 's' && simOuNao != 'n' && simOuNao != 'S' && simOuNao != 'N') {
+        printf("Por favor, digite S ou N:\n> ");
         scanf(" %c", &simOuNao);
     }
 
